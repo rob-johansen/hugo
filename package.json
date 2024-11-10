@@ -1,11 +1,19 @@
 {
+  "devDependencies": {
+    "@eslint/js": "9.14.0",
+    "@types/eslint__js": "8.42.3",
+    "eslint": "9.14.0",
+    "husky": "9.1.6",
+    "lint-staged": "15.2.10",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.13.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "pnpm lint --"
+  },
   "name": "hugo",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --cache --max-warnings 0 './**/*.{ts,tsx}'",
     "prepare": "husky"
-  },
-  "devDependencies": {
-    "husky": "9.1.6",
-    "lint-staged": "15.2.10"
   }
 }
