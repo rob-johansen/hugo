@@ -1,0 +1,32 @@
+# Debug
+.pnpm-debug.log*
+
+# Environment
+.env*.local
+packages/api/.env
+
+# ESLint
+.eslintcache
+
+# JetBrains
+.idea
+
+# Mac
+.DS_Store
+
+# Next.js
+.next
+build
+out
+
+# Node.js
+node_modules
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Vite
+dist
