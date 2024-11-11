@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@hugo/types": "workspace:*",
+    "@hugo/validations": "workspace:*",
+    "cookie-parser": "1.4.7",
+    "express": "5.0.1",
+    "pg": "8.13.1",
+    "pg-camelcase": "0.0.3",
+    "pg-format": "1.0.4",
+    "winston": "3.16.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "1.4.7",
+    "@types/express": "5.0.0",
+    "@types/pg": "8.11.10",
+    "@types/pg-format": "1.0.5",
+    "dotenv": "16.4.5",
+    "tsx": "4.19.2"
+  },
+  "name": "api",
+  "scripts": {
+    "db-migrate-dev": "tsx --require dotenv/config ./src/data/migrations/migrate.ts",
+    "start-api-dev": "tsx watch --clear-screen=false --require dotenv/config ./src/api.ts"
+  },
+  "version": "0.0.1"
+}
