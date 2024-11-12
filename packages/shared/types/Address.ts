@@ -1,6 +1,6 @@
 export type Address = {
   address1: string
-  address2?: string
+  address2?: string | null
   city: string
   id: string
   quoteId: string

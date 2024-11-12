@@ -1,14 +1,16 @@
-import { QueryResult } from 'pg'
+import { PoolClient, QueryResult } from 'pg'
 
 import { query } from '@/data/db'
-import type { Driver, NewDriver, NewQuote } from '@hugo/types'
+import { updateAddress } from '@/data/queries/address'
+import { updateDrivers } from '@/data/queries/driver'
+import { updateVehicles } from '@/data/queries/vehicle'
+import type { Driver, NewDriver, NewQuote, Quote } from '@hugo/types'
 
 export const startQuote = async (drivers: NewDriver[]): Promise<NewQuote> => {
   let count = 1
 
   const sql = `
-    WITH
-    quote AS (
+    WITH quote AS (
       INSERT INTO quotes (id)
       VALUES (DEFAULT)
       RETURNING id
@@ -41,6 +43,26 @@ export const startQuote = async (drivers: NewDriver[]): Promise<NewQuote> => {
   }
 }
 
-export const updateQuote = async (): Promise<void> => {
+export const updateQuote = async (
+  quoteId: string,
+  { address, drivers, vehicles }: Partial<Quote>,
+  client: PoolClient
+): Promise<Partial<Quote>> => {
+  // Delete the quote to take advantage of the cascade.
+  await client.query(
+    `DELETE FROM quotes WHERE id = $1`,
+    [quoteId]
+  )
 
+  await client.query(
+    `INSERT INTO quotes (id) VALUES ($1)`,
+    [quoteId]
+  )
+
+  return  {
+    ...(address ? { address: await updateAddress(address, quoteId, client) } : {}),
+    ...(drivers ? { drivers: await updateDrivers(drivers, quoteId, client) } : {}),
+    ...(vehicles ? { vehicles: await updateVehicles(vehicles, quoteId, client) } : {}),
+    id: quoteId
+  }
 }
