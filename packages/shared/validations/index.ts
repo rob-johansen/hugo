@@ -1,5 +1,5 @@
 import { ClientError, Relationship, RelationshipValues } from '@hugo/types'
-import type { Driver } from '@hugo/types'
+import type { NewDriver } from '@hugo/types'
 
 export const validateBirthDate = (birthDate?: string): string => {
   if (!birthDate) {
@@ -11,7 +11,7 @@ export const validateBirthDate = (birthDate?: string): string => {
   return birthDate
 }
 
-export const validateDrivers = (drivers?: Omit<Driver, 'id' | 'quoteId'>[]): Omit<Driver, 'id' | 'quoteId'>[] => {
+export const validateDrivers = (drivers?:NewDriver[]): NewDriver[] => {
   if (!drivers || drivers.length === 0) {
     throw new ClientError('Please provide one or more drivers.')
   }

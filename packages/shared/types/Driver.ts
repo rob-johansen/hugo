@@ -8,3 +8,5 @@ export type Driver = {
   quoteId: string
   relationship: Relationship
 }
+
+export type NewDriver = Omit<Driver, 'id' | 'quoteId'>

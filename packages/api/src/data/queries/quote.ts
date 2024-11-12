@@ -1,25 +1,27 @@
 import { QueryResult } from 'pg'
 
 import { query } from '@/data/db'
-import type { Driver } from '@hugo/types'
+import type { Driver, NewDriver, NewQuote } from '@hugo/types'
 
-export const startQuote = async (drivers: Omit<Driver, 'id' | 'quoteId'>[]): Promise<string> => {
+export const startQuote = async (drivers: NewDriver[]): Promise<NewQuote> => {
   let count = 1
 
   const sql = `
-    WITH quote AS (
+    WITH
+    quote AS (
       INSERT INTO quotes (id)
       VALUES (DEFAULT)
       RETURNING id
+    ),
+    driver_list AS (
+      INSERT INTO drivers (quote_id, first_name, last_name, birth_date, relationship)
+      VALUES ${drivers.map(() => {
+        return `((SELECT id FROM quote), $${count++}, $${count++}, $${count++}, $${count++})`
+      })}
+      RETURNING *
     )
-    INSERT INTO drivers (quote_id, first_name, last_name, birth_date, relationship)
-    VALUES ${drivers.map(() => {
-      return `((SELECT id FROM quote), $${count++}, $${count++}, $${count++}, $${count++})`
-    })}
-    RETURNING (
-      SELECT id
-      FROM quote
-    )
+    SELECT *
+    FROM driver_list
   `
 
   const values = []
@@ -31,7 +33,14 @@ export const startQuote = async (drivers: Omit<Driver, 'id' | 'quoteId'>[]): Pro
     values.push(driver.relationship)
   }
 
-  const result: QueryResult<{ id: string }> = await query(sql, values)
+  const result: QueryResult<Driver> = await query(sql, values)
 
-  return result.rows[0].id
+  return {
+    drivers: result.rows.map((driver) => driver),
+    id: result.rows[0].quoteId
+  }
+}
+
+export const updateQuote = async (): Promise<void> => {
+
 }

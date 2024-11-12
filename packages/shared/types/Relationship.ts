@@ -2,7 +2,7 @@ export enum Relationship {
   Friend = 'Friend',
   Other = 'Other',
   Parent = 'Parent',
-  Self = 'Self',
+  Primary = 'Primary',
   Sibling = 'Sibling',
   Spouse = 'Spouse'
 }
