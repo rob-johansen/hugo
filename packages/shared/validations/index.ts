@@ -1,6 +1,8 @@
 import { ClientError, Relationship, RelationshipValues } from '@hugo/types'
 import type { NewDriver } from '@hugo/types'
 
+export const UUID_LENGTH = 36
+
 export const validateBirthDate = (birthDate?: string): string => {
   if (!birthDate) {
     throw new ClientError('Please enter a birth date.')
@@ -24,6 +26,14 @@ export const validateDrivers = (drivers?:NewDriver[]): NewDriver[] => {
   }
 
   return drivers
+}
+
+export const validateId = (id?: string): string => {
+  if (!id || id.length !== UUID_LENGTH || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    throw new ClientError('Invalid ID')
+  }
+
+  return id
 }
 
 export const validateName = (name?: string): string => {

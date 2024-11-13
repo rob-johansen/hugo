@@ -1,4 +1,5 @@
 export enum Relationship {
+  Child = 'Child',
   Friend = 'Friend',
   Other = 'Other',
   Parent = 'Parent',
