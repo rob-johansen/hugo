@@ -106,11 +106,14 @@ importers:
   packages/ui:
     dependencies:
       '@floating-ui/react':
-        specifier: ^0.26.27
+        specifier: 0.26.27
         version: 0.26.27(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)
       '@hugo/types':
         specifier: workspace:*
         version: link:../shared/types
+      '@hugo/validations':
+        specifier: workspace:^
+        version: link:../shared/validations
       mobx:
         specifier: 6.13.5
         version: 6.13.5

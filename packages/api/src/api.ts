@@ -17,7 +17,7 @@ api.use(express.urlencoded({ extended: true }))
 api.use((_req: Request, res: Response, next: NextFunction): void => {
   res.set('Access-Control-Allow-Origin', process.env.HUGO_ORIGIN)
   res.set('Access-Control-Allow-Headers', 'Accept, Content-Type, Origin')
-  res.set('Access-Control-Allow-Methods', 'DELETE, GET, OPTIONS, PATCH, POST')
+  res.set('Access-Control-Allow-Methods', 'DELETE, GET, OPTIONS, POST, PUT')
   res.set('Access-Control-Allow-Credentials', 'true')
   res.vary('Origin')
   next()

@@ -43,4 +43,8 @@ export class ViewModel {
   showDrivers = (): boolean => {
     return this.state.step === 2
   }
+
+  showAddress = (): boolean => {
+    return this.state.step === 3
+  }
 }

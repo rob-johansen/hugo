@@ -3,7 +3,9 @@ import { ChangeEvent, useContext } from 'react'
 import type React from 'react'
 
 import { AppContext } from '@/contexts/AppContext'
-import { Select } from '@/components/select'
+import { Button } from '@/components/button/Button'
+import { Icon, ArrowForward } from '@/components/icon'
+// import { Select } from '@/components/select'
 import { TextField } from '@/components/text-field/TextField'
 import { ViewModel } from './ViewModel'
 
@@ -20,6 +22,9 @@ export const Drivers = (): React.JSX.Element => {
 const View = observer(({ vm }: ViewProps): React.JSX.Element => {
   return (
     <div className="flex flex-col">
+      <h1 className="font-bold mb-[40px] text-[1.5rem]">
+        Who is the primary driver?
+      </h1>
       <TextField
         error={vm.state.firstNameError}
         id="first"
@@ -36,17 +41,30 @@ const View = observer(({ vm }: ViewProps): React.JSX.Element => {
       />
       <TextField
         error={vm.state.birthDateError}
-        id="last"
+        id="birth"
         label="Birth date"
         onChange={(event: ChangeEvent<HTMLInputElement>): void => vm.onChangeBirthDate(event.target.value)}
         placeholder="MM/DD/YYYY"
         value={vm.state.birthDate}
       />
-      <Select
-        label="Relationship"
-        options={vm.state.relationshipOptions}
-        onClickOption={vm.onClickRelationship}
-      />
+      {/*<Select*/}
+      {/*  id="relationship"*/}
+      {/*  label="Relationship"*/}
+      {/*  options={vm.state.relationshipOptions}*/}
+      {/*  onClickOption={vm.onClickRelationship}*/}
+      {/*/>*/}
+      <div className="flex justify-end mt-[20px] w-full">
+        <Button
+          className="w-[120px]"
+          icon={{
+            element: <Icon source={ArrowForward} />,
+            location: 'right'
+          }}
+          onClick={vm.onClickNext}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   )
 })

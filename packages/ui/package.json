@@ -2,6 +2,7 @@
   "dependencies": {
     "@floating-ui/react": "0.26.27",
     "@hugo/types": "workspace:*",
+    "@hugo/validations": "workspace:*",
     "mobx": "6.13.5",
     "mobx-react-lite": "4.0.7",
     "next": "15.0.3",

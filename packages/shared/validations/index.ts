@@ -3,19 +3,47 @@ import type { NewDriver } from '@hugo/types'
 
 export const UUID_LENGTH = 36
 
-export const validateBirthDate = (birthDate?: string): string => {
-  if (!birthDate) {
-    throw new ClientError('Please enter a birth date.')
+export const validateAddressLine = (line?: string): string => {
+  if (!line) {
+    throw new ClientError('Please enter an address')
   }
 
-  // TODO: Validate the format of the date (e.g. 1976-02-11)
+  return line
+}
+
+export const validateBirthDate = (birthDate?: string): string => {
+  if (!birthDate) {
+    throw new ClientError('Please enter a birth date')
+  }
+
+  // TODO: Add more robust validation here (only 12 months, correct name of days per month, etc.)
+  const [month, date, year] = birthDate.split('/')
+
+  if (!/^\d{2}$/.test(month) || !/^\d{2}$/.test(date) || !/^\d{4}$/.test(year)) {
+    throw new ClientError('Please use MM/DD/YYYY format')
+  }
+
+  const sixteenYearsAgo = new Date().getFullYear() - 16
+  const birthYear = Number.parseInt(year)
+
+  if (Number.isNaN(birthYear) || sixteenYearsAgo < birthYear) {
+    throw new ClientError('Drivers must be at least 16 years old')
+  }
 
   return birthDate
 }
 
+export const validateCity = (city?: string): string => {
+  if (!city) {
+    throw new ClientError('Please enter a city')
+  }
+
+  return city
+}
+
 export const validateDrivers = (drivers?:NewDriver[]): NewDriver[] => {
   if (!drivers || drivers.length === 0) {
-    throw new ClientError('Please provide one or more drivers.')
+    throw new ClientError('Please provide one or more drivers')
   }
 
   for (const driver of drivers) {
@@ -38,7 +66,7 @@ export const validateId = (id?: string): string => {
 
 export const validateName = (name?: string): string => {
   if (!name) {
-    throw new ClientError('Please enter a name.')
+    throw new ClientError('Please enter a name')
   }
 
   return name
@@ -46,7 +74,7 @@ export const validateName = (name?: string): string => {
 
 export const validateRelationship = (relationship?: Relationship): Relationship => {
   if (!relationship) {
-    throw new ClientError('Please choose a relationship.')
+    throw new ClientError('Please choose a relationship')
   }
 
   if (!RelationshipValues.includes(relationship)) {
@@ -54,4 +82,16 @@ export const validateRelationship = (relationship?: Relationship): Relationship 
   }
 
   return relationship
+}
+
+export const validateZip = (zip?: string): string => {
+  if (!zip) {
+    throw new ClientError('Please enter a zip code')
+  }
+
+  if (zip.length !== 5 || !/^\d{5}$/.test(zip)) {
+    throw new ClientError('Please enter a 5-digit zip code')
+  }
+
+  return zip
 }

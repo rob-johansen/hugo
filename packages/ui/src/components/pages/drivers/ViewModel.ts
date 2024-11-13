@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 
 import { Relationship } from '@hugo/types'
+import { validateBirthDate, validateName } from '@hugo/validations'
 import type { AppContextType } from '@/contexts/AppContext'
 import type { NewDriver } from '@hugo/types'
 import type { Option } from '@/components/select/View'
@@ -23,13 +24,13 @@ export class ViewModel {
     lastNameError: '',
     relationship: Relationship.Primary,
     relationshipOptions: [
-      { name: Relationship.Primary, selected: true, value: Relationship.Primary },
-      { name: Relationship.Spouse, selected: false, value: Relationship.Spouse },
-      { name: Relationship.Child, selected: false, value: Relationship.Child },
-      { name: Relationship.Parent, selected: false, value: Relationship.Parent },
-      { name: Relationship.Sibling, selected: false, value: Relationship.Sibling },
-      { name: Relationship.Friend, selected: false, value: Relationship.Friend },
-      { name: Relationship.Other, selected: false, value: Relationship.Other },
+      { name: Relationship.Primary, value: Relationship.Primary },
+      { name: Relationship.Spouse, value: Relationship.Spouse },
+      { name: Relationship.Child, value: Relationship.Child },
+      { name: Relationship.Parent, value: Relationship.Parent },
+      { name: Relationship.Sibling, value: Relationship.Sibling },
+      { name: Relationship.Friend, value: Relationship.Friend },
+      { name: Relationship.Other, value: Relationship.Other },
     ]
   }
 
@@ -59,6 +60,57 @@ export class ViewModel {
   onChangeLastName = (value: string): void => {
     this.state.lastName = value
     this.state.lastNameError = ''
+  }
+
+  onClickNext = async (): Promise<void> => {
+    let error = false
+
+    try {
+      validateName(this.state.firstName)
+    } catch (err) {
+      this.state.firstNameError = err.message
+      error = true
+    }
+
+    try {
+      validateName(this.state.lastName)
+    } catch (err) {
+      this.state.lastNameError = err.message
+      error = true
+    }
+
+    try {
+      validateBirthDate(this.state.birthDate)
+    } catch (err) {
+      this.state.birthDateError = err.message
+      error = true
+    }
+
+    if (error) {
+      return
+    }
+
+    const driver: NewDriver = {
+      birthDate: this.state.birthDate,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      relationship: this.state.relationship
+    }
+
+    // TODO: Add support for calling the PUT here (the user might have clicked back)
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes`, {
+      body: JSON.stringify({ drivers: [driver] }),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    })
+
+    if (response.ok) {
+      this.context.quote = await response.json()
+      this.context.next()
+    } else {
+      // TODO: Show a toast or banner
+    }
   }
 
   onClickRelationship = ({ value }: Option): void => {
