@@ -69,7 +69,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 ::selection {
   color: var(--background);
-  background-color: var(--foreground);
+  background-color: #6e66db;
 }
 
 /* Scrollbar! */

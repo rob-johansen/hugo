@@ -5,6 +5,7 @@ import type React from 'react'
 
 import { AppContext } from '@/contexts/AppContext'
 import { GetStarted } from '@/components/pages/get-started'
+import { Drivers } from '@/components/pages/drivers'
 import { ViewModel } from './ViewModel'
 
 type ViewProps = {
@@ -20,6 +21,7 @@ const View = observer(({ vm }: ViewProps): React.JSX.Element => {
   return (
     <AppContext.Provider value={vm.state}>
       {vm.showGetStarted() && <GetStarted />}
+      {vm.showDrivers() && <Drivers />}
     </AppContext.Provider>
   )
 })

@@ -39,4 +39,8 @@ export class ViewModel {
   showGetStarted = (): boolean => {
     return this.state.step === 1
   }
+
+  showDrivers = (): boolean => {
+    return this.state.step === 2
+  }
 }
