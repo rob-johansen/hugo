@@ -36,6 +36,13 @@ export class ViewModel {
 
   constructor(context: AppContextType) {
     this._context = context
+
+    if (context.quote.id) {
+      this.state.firstName = context.quote.drivers[0].firstName
+      this.state.lastName = context.quote.drivers[0].lastName
+      this.state.birthDate = context.quote.drivers[0].birthDate
+    }
+
     makeAutoObservable(this)
   }
 
@@ -97,16 +104,29 @@ export class ViewModel {
       relationship: this.state.relationship
     }
 
-    // TODO: Add support for calling the PUT here (the user might have clicked back)
+    let url = `${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes`
+    let method = 'POST'
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes`, {
-      body: JSON.stringify({ drivers: [driver] }),
+    if (this.context.quote.id) {
+      // The quote has an id, which means the user is
+      // resuming a quote, so we PUT instead of POST.
+      url += `/${this.context.quote.id}`
+      method = 'PUT'
+    }
+
+    const response = await fetch(url, {
+      body: JSON.stringify({
+        ...(this.context.quote.address ? { address: this.context.quote.address } : {}),
+        ...(this.context.quote.vehicles ? { vehicles: this.context.quote.vehicles } : {}),
+        drivers: [driver]
+      }),
       headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
+      method,
     })
 
     if (response.ok) {
       this.context.quote = await response.json()
+      localStorage.setItem('quoteId', this.context.quote.id)
       this.context.next()
     } else {
       // TODO: Show a toast or banner

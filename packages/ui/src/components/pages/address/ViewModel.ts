@@ -84,6 +84,18 @@ export class ViewModel {
 
   constructor(context: AppContextType) {
     this._context = context
+
+    if (context.quote.address) {
+      this.state.address1 = context.quote.address.address1
+      this.state.address2 = context.quote.address.address2
+      this.state.city = context.quote.address.city
+      this.state.state = context.quote.address.state
+      for (const option of this.state.stateOptions) {
+        option.selected = option.value === this.state.state
+      }
+      this.state.zip = context.quote.address.zip
+    }
+
     makeAutoObservable(this)
   }
 
@@ -121,6 +133,10 @@ export class ViewModel {
   onChangeZip = (value: string): void => {
     this.state.zip = value
     this.state.zipError = ''
+  }
+
+  onClickBack = (): void => {
+    this.context.back()
   }
 
   onClickNext = async (): Promise<void> => {
@@ -167,9 +183,9 @@ export class ViewModel {
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes/${this.context.quote.id}`, {
       body: JSON.stringify({
+        ...(this.context.quote.vehicles ? { vehicles: this.context.quote.vehicles } : {}),
         address,
         drivers: this.context.quote.drivers,
-        // TODO: Add the vehicles here (the user might have clicked back)
       }),
       headers: { 'Content-Type': 'application/json' },
       method: 'PUT',

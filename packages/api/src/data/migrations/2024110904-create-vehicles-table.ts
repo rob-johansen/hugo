@@ -5,7 +5,7 @@ export const run = async (client: PoolClient): Promise<void> => {
     CREATE TABLE IF NOT EXISTS vehicles (
       id            uuid   NOT NULL  DEFAULT gen_random_uuid(),
       quote_id      uuid   NOT NULL  REFERENCES quotes (id) ON DELETE CASCADE,
-      vin           text   NOT NULL  UNIQUE,
+      vin           text   NOT NULL,
       year          text   NOT NULL,
       make          text   NOT NULL,
       model         text   NOT NULL,

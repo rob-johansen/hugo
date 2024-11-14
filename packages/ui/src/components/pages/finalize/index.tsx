@@ -96,6 +96,7 @@ const View = observer(({ vm }: ViewProps): React.JSX.Element => {
             element: <Icon source={ArrowForward}/>,
             location: 'right'
           }}
+          loading={vm.state.loading}
           onClick={async (): Promise<void> => {
             const success = await vm.onClickFinalize()
             if (success) {

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import type React from 'react'
 
 import { AppContext } from '@/contexts/AppContext'
@@ -18,11 +18,27 @@ export const GetStarted = (): React.JSX.Element => {
 }
 
 const View = observer(({ vm }: ViewProps): React.JSX.Element => {
+  useEffect(() => {
+    vm.setQuoteId(localStorage.getItem('quoteId') ?? '')
+  }, [])
+
   return (
     <div className="flex flex-col font-bold items-center leading-tight text-[3rem]">
       <Icon className="mb-[60px]" source={Logo} />
       <span>The future of</span>
       <span className="text-purple">car insurance</span>
+      {vm.state.quoteId && (
+        <Button
+          className="mt-[40px]"
+          icon={{
+            element: <Icon source={ArrowForward} />,
+            location: 'right'
+          }}
+          onClick={vm.onClickResumeQuote}
+        >
+          Resume quote
+        </Button>
+      )}
       <Button
         className="mt-[40px]"
         icon={{
