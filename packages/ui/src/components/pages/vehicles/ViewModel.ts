@@ -104,18 +104,19 @@ export class ViewModel {
       return
     }
 
-    const vehicle: NewVehicle = {
-      make: this.state.make,
-      model: this.state.model,
-      vin: this.state.vin,
-      year: this.state.year,
-    }
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes/${this.context.quote.id}`, {
       body: JSON.stringify({
         address: this.context.quote.address,
         drivers: this.context.quote.drivers,
-        vehicles: [vehicle]
+        vehicles: [
+          {
+            ...(this.context.quote.vehicles?.[0]?.id ? { id: this.context.quote.vehicles[0].id } : {}),
+            make: this.state.make,
+            model: this.state.model,
+            vin: this.state.vin,
+            year: this.state.year,
+          }
+        ]
       }),
       headers: { 'Content-Type': 'application/json' },
       method: 'PUT',

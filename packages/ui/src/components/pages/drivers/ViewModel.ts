@@ -97,13 +97,6 @@ export class ViewModel {
       return
     }
 
-    const driver: NewDriver = {
-      birthDate: this.state.birthDate,
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      relationship: this.state.relationship
-    }
-
     let url = `${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes`
     let method = 'POST'
 
@@ -118,7 +111,15 @@ export class ViewModel {
       body: JSON.stringify({
         ...(this.context.quote.address ? { address: this.context.quote.address } : {}),
         ...(this.context.quote.vehicles ? { vehicles: this.context.quote.vehicles } : {}),
-        drivers: [driver]
+        drivers: [
+          {
+            ...(this.context.quote.drivers[0] ? { id: this.context.quote.drivers[0].id } : {}),
+            birthDate: this.state.birthDate,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            relationship: this.state.relationship
+          }
+        ]
       }),
       headers: { 'Content-Type': 'application/json' },
       method,

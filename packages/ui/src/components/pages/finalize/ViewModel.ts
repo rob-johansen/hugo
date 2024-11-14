@@ -25,7 +25,11 @@ export class ViewModel {
     return this._state
   }
 
-  onClickFinalize = async (): Promise<boolean> => {
+  onClickBack = (): void => {
+    this.context.back()
+  }
+
+  onClickSubmit = async (): Promise<boolean> => {
     this.state.loading = true
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes/finalize`, {
