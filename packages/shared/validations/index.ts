@@ -18,15 +18,15 @@ export const validateBirthDate = (birthDate?: string): string => {
 
   // TODO: Add more robust validation here (only 12 months, correct name of days per month, etc.)
   const [month, date, year] = birthDate.split('/')
+  const numericYear = Number.parseInt(year)
 
-  if (!/^\d{2}$/.test(month) || !/^\d{2}$/.test(date) || !/^\d{4}$/.test(year)) {
+  if (!/^\d{2}$/.test(month) || !/^\d{2}$/.test(date) || Number.isNaN(numericYear) || !/^\d{4}$/.test(year)) {
     throw new ClientError('Please use MM/DD/YYYY format')
   }
 
   const sixteenYearsAgo = new Date().getFullYear() - 16
-  const birthYear = Number.parseInt(year)
 
-  if (Number.isNaN(birthYear) || sixteenYearsAgo < birthYear) {
+  if (sixteenYearsAgo < numericYear) {
     throw new ClientError('Drivers must be at least 16 years old')
   }
 
@@ -64,6 +64,22 @@ export const validateId = (id?: string): string => {
   return id
 }
 
+export const validateMake = (make?: string): string => {
+  if (!make) {
+    throw new ClientError('Please enter a make')
+  }
+
+  return make
+}
+
+export const validateModel = (model?: string): string => {
+  if (!model) {
+    throw new ClientError('Please enter a model')
+  }
+
+  return model
+}
+
 export const validateName = (name?: string): string => {
   if (!name) {
     throw new ClientError('Please enter a name')
@@ -84,12 +100,36 @@ export const validateRelationship = (relationship?: Relationship): Relationship 
   return relationship
 }
 
-export const validateZip = (zip?: string): string => {
-  if (!zip) {
-    throw new ClientError('Please enter a zip code')
+export const validateVehicleYear = (year?: string): string => {
+  const numericYear = Number.parseInt(year ?? '')
+
+  if (!year || year.length !== 4 || Number.isNaN(numericYear) || !/^\d{4}$/.test(year)) {
+    throw new ClientError('Please enter a 4-digit year')
   }
 
-  if (zip.length !== 5 || !/^\d{5}$/.test(zip)) {
+  const nextYear = new Date().getFullYear() + 1
+
+  if (numericYear < 1985) {
+    throw new ClientError('Unfortunately our limit is 1985')
+  }
+
+  if (numericYear > nextYear) {
+    throw new ClientError(`Unfortunately our limt is ${nextYear}`)
+  }
+
+  return year
+}
+
+export const validateVin = (vin?: string): string => {
+  if (!vin) {
+    throw new ClientError('Please enter a VIN')
+  }
+
+  return vin
+}
+
+export const validateZip = (zip?: string): string => {
+  if (!zip || zip.length !== 5 || !/^\d{5}$/.test(zip)) {
     throw new ClientError('Please enter a 5-digit zip code')
   }
 

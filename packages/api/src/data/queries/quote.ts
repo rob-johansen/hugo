@@ -10,14 +10,15 @@ type SelectedQuote =
   Partial<Address> &
   Partial<Driver> &
   Partial<Vehicle> &
-  { addressId?: string, driverId?: string, vehicleId?: string }
+  { addressId?: string, driverId?: string, vehicleId?: string, price?: string }
 
 export const getQuote = async (id: string, client?: PoolClient): Promise<Partial<Quote> | undefined> => {
   const sql = `
     SELECT
       a.id AS address_id, a.address1, a.address2, a.city, a.state, a.zip,
       d.id AS driver_id, d.first_name, d.last_name, d.birth_date, d.relationship,
-      v.id AS vehicle_id, v.vin, v.year, v.make, v.model
+      v.id AS vehicle_id, v.vin, v.year, v.make, v.model,
+      q.price
     FROM quotes AS q
     LEFT JOIN addresses AS a ON a.quote_id = q.id
     LEFT JOIN drivers AS d ON d.quote_id = q.id
@@ -79,7 +80,8 @@ export const getQuote = async (id: string, client?: PoolClient): Promise<Partial
     ...(address ? { address } : {}),
     ...(driverMap.size > 0 ? { drivers: Array.from(driverMap.values()) } : {}),
     ...(vehicleMap.size > 0 ? { vehicles: Array.from(vehicleMap.values()) } : {}),
-    id
+    id,
+    price: result.rows[0].price
   } as Partial<Quote>
 }
 

@@ -47,4 +47,12 @@ export class ViewModel {
   showAddress = (): boolean => {
     return this.state.step === 3
   }
+
+  showVehicles = (): boolean => {
+    return this.state.step === 4
+  }
+
+  showFinalize = (): boolean => {
+    return this.state.step === 5
+  }
 }

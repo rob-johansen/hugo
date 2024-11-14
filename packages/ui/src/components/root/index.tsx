@@ -5,8 +5,10 @@ import type React from 'react'
 
 import { Address } from '@/components/pages/address'
 import { AppContext } from '@/contexts/AppContext'
-import { GetStarted } from '@/components/pages/get-started'
 import { Drivers } from '@/components/pages/drivers'
+import { Finalize } from '@/components/pages/finalize'
+import { GetStarted } from '@/components/pages/get-started'
+import { Vehicles } from '@/components/pages/vehicles'
 import { ViewModel } from './ViewModel'
 
 type ViewProps = {
@@ -24,6 +26,8 @@ const View = observer(({ vm }: ViewProps): React.JSX.Element => {
       {vm.showGetStarted() && <GetStarted />}
       {vm.showDrivers() && <Drivers />}
       {vm.showAddress() && <Address />}
+      {vm.showVehicles() && <Vehicles />}
+      {vm.showFinalize() && <Finalize />}
     </AppContext.Provider>
   )
 })
