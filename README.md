@@ -1,65 +1,95 @@
-# Database
+# Rob Johansen - Hugo Project
 
-## Table of Contents
+## Setup Steps
 
-* [Creation](#creation)
-* [Migrations](#migrations)
+If you have any problems getting set up, please let me know and I'd be happy to help!
 
----
-
-### Creation
-
-1. Launch `pqsl` as the `postgres` user:
+1. Install Node.js v20 (or at least v18.12) however you like. I use [nvm](https://github.com/nvm-sh/nvm).
+2. Install [pnpm](https://pnpm.io/installation) and make sure it's on your path.
+3. Install PostgreSQL however you like, and make sure it's running. I'm on a Mac and
+   I use [Postgres.app](https://postgresapp.com), but you could use Docker or some
+   other installation means. (Note that I used PostgreSQL v14 for this project.)
+4. Open a terminal and launch `pqsl` as the `postgres` user:
     
     ```
     psql -U postgres
     ```
     
-2. Create the database:
+5. Create the database (I recommend `hugo` for the `<DB_NAME>`):
     
     ```
     CREATE DATABASE <DB_NAME>;
     ```
     
-3. Create the user:
+6. Create the user (I recommend `braveheart` for the `<DB_USER>` and `SomeReallyStrongPassword` for the `<DB_PASSWORD>`):
     
     ```
     CREATE USER <DB_USER> WITH PASSWORD '<DB_PASSWORD>';
     ```
     
-4. Connect to the database:
+7. Connect to the database:
     
     ```
     \c <DB_NAME>
     ```
     
-5. Grant `DB_USER` access to all tables:
+8. Grant `DB_USER` access to all tables:
     
     ```
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO <DB_USER>;
     ```
     
-6. Quit as the `postgres` user:
+9. Quit as the `postgres` user:
     
     ```
     \q
     ```
     
-7. Connect as `DB_USER` (provide the password when prompted):
+10. Clone this repository:
     
     ```
-    psql -U <DB_USER> <DB_NAME>
+    git clone https://github.com/rob-johansen/hugo.git
     ```
     
-
----
-
-### Migrations
-
-1. Open a shell and change to the `packages/api` directory.
-2. Execute the following:
-     
+11. Install packages via `pnpm` from the root of the repository:
+    
     ```
-    pn db-migrate-dev
+    pnpm install
     ```
     
+12. Change to the `packages/api` directory and rename the `.env.example` file to `.env`.
+    Make sure all the `DB_` environment variables match the values you chose when setting
+    up PostgreSQL.
+13. Run the database migrations:
+    
+    ```
+    pnpm db-migrate-dev
+    ```
+    
+14. Change to the `packages/shared/types` directory and build the types that are shared
+    between the API and UI:
+    
+    ```
+    pnpm build
+    ```
+    
+15. Change to the `packages/shared/validations` directory and build the validations that are shared
+    between the API and UI:
+
+    ```
+    pnpm build
+    ```
+    
+16. Change back to the `packages/api` directory and start the API server:
+    
+    ```
+    pnpm run start-api-dev
+    ```    
+    
+17. Change to the `packages/ui` directory and start the UI server (Next.js):
+    
+    ```
+    pnpm run dev
+    ```
+    
+18. Open your browser to http://localhost:3000 and click `Get started` to create a quote!
