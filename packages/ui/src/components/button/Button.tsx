@@ -48,19 +48,19 @@ export const Button = ({
     `,
     disabled &&
     `
-      active:bg-[#444444]
-      bg-[#444444]
+      active:bg-purple/[0.5]
+      bg-purple/[0.5]
       border-transparent
       cursor-not-allowed
-      hover:bg-[#444444]
+      hover:bg-purple/[0.5]
       text-[#888888]
     `,
     loading &&
     `
-      active:bg-[#6ea9db]
-      bg-[#6ea9db]
+      active:bg-purple/[0.5]
+      bg-purple/[0.5]
       cursor-default
-      hover:bg-[#6ea9db]
+      hover:bg-purple/[0.5]
     `,
     icon && icon.location === 'right' ? 'flex-row' : 'flex-row-reverse',
     className

@@ -5,8 +5,8 @@ import type React from 'react'
 
 import { AppContext } from '@/contexts/AppContext'
 import { Button } from '@/components/button/Button'
+import { Icon, ArrowBack, ArrowForward } from '@/components/icon'
 import { ViewModel } from './ViewModel'
-import { ArrowForward, Icon } from '@/components/icon'
 
 type ViewProps = {
   vm: ViewModel
@@ -89,15 +89,26 @@ const View = observer(({ vm }: ViewProps): React.JSX.Element => {
           <span>{vm.context.quote.vehicles[0].vin}</span>
         </div>
       </div>
-      <div className="flex justify-end mt-[20px] w-full">
+      <div className="flex justify-between mt-[20px] w-full">
+        <Button
+          className="w-[120px]"
+          disabled={vm.state.loading}
+          icon={{
+            element: <Icon source={ArrowBack}/>
+          }}
+          onClick={vm.onClickBack}
+        >
+          Back
+        </Button>
         <Button
           className="w-[120px]"
           icon={{
             element: <Icon source={ArrowForward}/>,
             location: 'right'
           }}
+          loading={vm.state.loading}
           onClick={async (): Promise<void> => {
-            const success = await vm.onClickFinalize()
+            const success = await vm.onClickSubmit()
             if (success) {
               router.push(`/price/${vm.context.quote.id}`)
             }

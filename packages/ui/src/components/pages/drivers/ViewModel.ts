@@ -36,6 +36,13 @@ export class ViewModel {
 
   constructor(context: AppContextType) {
     this._context = context
+
+    if (context.quote.id) {
+      this.state.firstName = context.quote.drivers[0].firstName
+      this.state.lastName = context.quote.drivers[0].lastName
+      this.state.birthDate = context.quote.drivers[0].birthDate
+    }
+
     makeAutoObservable(this)
   }
 
@@ -90,23 +97,37 @@ export class ViewModel {
       return
     }
 
-    const driver: NewDriver = {
-      birthDate: this.state.birthDate,
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      relationship: this.state.relationship
+    let url = `${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes`
+    let method = 'POST'
+
+    if (this.context.quote.id) {
+      // The quote has an id, which means the user is
+      // resuming a quote, so we PUT instead of POST.
+      url += `/${this.context.quote.id}`
+      method = 'PUT'
     }
 
-    // TODO: Add support for calling the PUT here (the user might have clicked back)
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes`, {
-      body: JSON.stringify({ drivers: [driver] }),
+    const response = await fetch(url, {
+      body: JSON.stringify({
+        ...(this.context.quote.address ? { address: this.context.quote.address } : {}),
+        ...(this.context.quote.vehicles ? { vehicles: this.context.quote.vehicles } : {}),
+        drivers: [
+          {
+            ...(this.context.quote.drivers[0] ? { id: this.context.quote.drivers[0].id } : {}),
+            birthDate: this.state.birthDate,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            relationship: this.state.relationship
+          }
+        ]
+      }),
       headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
+      method,
     })
 
     if (response.ok) {
       this.context.quote = await response.json()
+      localStorage.setItem('quoteId', this.context.quote.id)
       this.context.next()
     } else {
       // TODO: Show a toast or banner

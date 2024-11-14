@@ -26,6 +26,14 @@ export class ViewModel {
 
   constructor(context: AppContextType) {
     this._context = context
+
+    if (context.quote.vehicles) {
+      this.state.make = context.quote.vehicles[0].make
+      this.state.model = context.quote.vehicles[0].model
+      this.state.vin = context.quote.vehicles[0].vin
+      this.state.year = context.quote.vehicles[0].year
+    }
+
     makeAutoObservable(this)
   }
 
@@ -55,6 +63,10 @@ export class ViewModel {
   onChangeYear = (value: string): void => {
     this.state.year = value
     this.state.yearError = ''
+  }
+
+  onClickBack = (): void => {
+    this.context.back()
   }
 
   onClickNext = async (): Promise<void> => {
@@ -92,18 +104,19 @@ export class ViewModel {
       return
     }
 
-    const vehicle: NewVehicle = {
-      make: this.state.make,
-      model: this.state.model,
-      vin: this.state.vin,
-      year: this.state.year,
-    }
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/v1/quotes/${this.context.quote.id}`, {
       body: JSON.stringify({
         address: this.context.quote.address,
         drivers: this.context.quote.drivers,
-        vehicles: [vehicle]
+        vehicles: [
+          {
+            ...(this.context.quote.vehicles?.[0]?.id ? { id: this.context.quote.vehicles[0].id } : {}),
+            make: this.state.make,
+            model: this.state.model,
+            vin: this.state.vin,
+            year: this.state.year,
+          }
+        ]
       }),
       headers: { 'Content-Type': 'application/json' },
       method: 'PUT',
