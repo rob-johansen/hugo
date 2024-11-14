@@ -1,7 +1,20 @@
 import { ClientError, Relationship, RelationshipValues } from '@hugo/types'
-import type { NewDriver } from '@hugo/types'
+import type { NewAddress, NewDriver, NewVehicle } from '@hugo/types'
 
 export const UUID_LENGTH = 36
+
+export const validateAddress = (address?: NewAddress): NewAddress => {
+  if (!address) {
+    throw new ClientError('Please enter an address')
+  }
+
+  validateAddressLine(address.address1)
+  validateCity(address.city)
+  // TODO: Move state values to shared types and validate here
+  validateZip(address.zip)
+
+  return address
+}
 
 export const validateAddressLine = (line?: string): string => {
   if (!line) {
@@ -41,7 +54,7 @@ export const validateCity = (city?: string): string => {
   return city
 }
 
-export const validateDrivers = (drivers?:NewDriver[]): NewDriver[] => {
+export const validateDrivers = (drivers?: NewDriver[]): NewDriver[] => {
   if (!drivers || drivers.length === 0) {
     throw new ClientError('Please provide one or more drivers')
   }
@@ -54,6 +67,21 @@ export const validateDrivers = (drivers?:NewDriver[]): NewDriver[] => {
   }
 
   return drivers
+}
+
+export const validateVehicles = (vehicles?: NewVehicle[]): NewVehicle[] => {
+  if (!vehicles || vehicles.length === 0) {
+    throw new ClientError('Please provide one or more drivers')
+  }
+
+  for (const vehicle of vehicles) {
+    validateMake(vehicle.make)
+    validateModel(vehicle.model)
+    validateVin(vehicle.vin)
+    validateVehicleYear(vehicle.year)
+  }
+
+  return vehicles
 }
 
 export const validateId = (id?: string): string => {

@@ -4,7 +4,8 @@ import type { Request, Response } from 'express'
 
 import { endTxn, startTxn } from '@/data/db'
 import { getQuote, startQuote, updatePrice, updateQuote } from '@/data/queries/quote'
-import { validateDrivers, validateId } from '@hugo/validations'
+import { getRandomInt } from '@/utils'
+import { validateAddress, validateDrivers, validateId, validateVehicles } from '@hugo/validations'
 import type { NewDriver, NewQuote, Quote } from '@hugo/types'
 
 export const router: Router = Router()
@@ -27,8 +28,9 @@ router.put('/:quoteId', async (
 
   try {
     const quoteId = validateId(req.params.quoteId)
-
-    // TODO: Validate all the input
+    if (req.body.address) validateAddress(req.body.address)
+    if (req.body.drivers) validateDrivers(req.body.drivers)
+    if (req.body.vehicles) validateVehicles(req.body.vehicles)
 
     client = await startTxn()
     const quote = await updateQuote(quoteId, req.body, client)
@@ -62,11 +64,12 @@ router.post('/finalize', async (
 
     const quote = await getQuote(quoteId, client)
 
-    // TODO: validate all parts of the quote
-
-    const price = 21_176
+    const price = getRandomInt(1_000, 10_000)
 
     if (quote) {
+      validateAddress(quote.address)
+      validateDrivers(quote.drivers)
+      validateVehicles(quote.vehicles)
       commit = await updatePrice(price, quoteId, client)
       res.status(200).send({ price })
     } else {
